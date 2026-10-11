@@ -22,6 +22,39 @@ jobs:
           cp icon-only.png icon-foreground.png icon-background.png splash.png assets/
           cp splash-dark.png assets/ || true
       - run: npm install
+      - name: Ajouter l'ecoute en arriere-plan
+        run: |
+          npm install @jofr/capacitor-media-session esbuild --legacy-peer-deps
+          cat > media-bridge-src.js <<'EOF'
+          import { MediaSession } from '@jofr/capacitor-media-session';
+          window.PodloMedia = MediaSession;
+          EOF
+          npx esbuild media-bridge-src.js --bundle --format=iife --outfile=www/media-bridge.js
+          cat > www/native.js <<'EOF'
+          (function(){
+            var M=window.PodloMedia;
+            if(!M||typeof au==="undefined")return;
+            function safe(p){try{if(p&&p.catch)p.catch(function(){})}catch(e){}}
+            function dur(){var d=au.duration;return isFinite(d)&&d>0?d:(cur&&cur.dur)||0}
+            function meta(){if(!cur)return;safe(M.setMetadata({title:cur.title,artist:cur.show,album:cur.show,artwork:cur.art?[{src:cur.art}]:[]}))}
+            function state(){safe(M.setPlaybackState({playbackState:au.paused?"paused":"playing"}))}
+            function pos(){var d=dur();if(!d)return;safe(M.setPositionState({duration:d,position:Math.min(au.currentTime||0,d),playbackRate:speed}))}
+            function act(a,f){try{safe(M.setActionHandler({action:a},f))}catch(e){}}
+            act("play",function(){au.play()});
+            act("pause",function(){au.pause()});
+            act("seekbackward",function(){au.currentTime=Math.max(0,au.currentTime-15)});
+            act("seekforward",function(){au.currentTime+=30});
+            act("nexttrack",function(){next()});
+            act("seekto",function(d){if(d&&d.seekTime!=null)au.currentTime=d.seekTime});
+            au.addEventListener("loadedmetadata",function(){meta();pos()});
+            au.addEventListener("play",function(){meta();state();pos()});
+            au.addEventListener("pause",function(){state();pos()});
+            au.addEventListener("ratechange",pos);
+            var t=0;
+            au.addEventListener("timeupdate",function(){var n=Date.now();if(n-t>5000){t=n;pos()}});
+          })();
+          EOF
+          sed -i 's#</body>#<script src="media-bridge.js"></script><script src="native.js"></script></body>#' www/index.html
       - run: npx cap add android
       - run: npx capacitor-assets generate --android
       - run: npx cap sync android
