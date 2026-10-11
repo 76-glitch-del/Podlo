@@ -1,0 +1,16 @@
+{
+  "name": "podlo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Podlo, appli de podcasts",
+  "dependencies": {
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/assets": "^3.0.0"
+  }
+}

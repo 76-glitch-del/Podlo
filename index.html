@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5B35E0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Podlo">
+<title>Podlo – vos podcasts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#FAF8FF;--card:#fff;--ink:#1C1840;--mute:#6A668F;--line:#E6E1F6;--acc:#6A3DE8;--onacc:#fff;--hi:#FFB36B;--grad:linear-gradient(135deg,#5B35E0,#E8447E 65%,#FFB36B);
+box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120F2B;--card:#1D1942;--ink:#F3F0FF;--mute:#A39FD0;--line:#2E2960;--acc:#A58AFF;--onacc:#120F2B}}
+:root[data-theme="dark"]{--bg:#120F2B;--card:#1D1942;--ink:#F3F0FF;--mute:#A39FD0;--line:#2E2960;--acc:#A58AFF;--onacc:#120F2B}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.4;padding-bottom:190px}
+.hero{background:var(--grad);color:#fff;border-radius:0 0 28px 28px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 22px}
+.hero .in,main{max-width:640px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px}
+.brand b{font-size:1.7rem;font-weight:800;letter-spacing:-.03em;flex:1}
+.plus{border:0;border-radius:99px;background:#fff;color:#1C1840;font:inherit;font-weight:800;padding:7px 16px;cursor:pointer}
+.tag{margin:14px 0 0;font-size:1.25rem;font-weight:600;letter-spacing:-.01em}
+main{padding:16px}
+nav{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:16px}
+nav button{flex:1;border:0;background:none;color:var(--mute);font:inherit;font-weight:600;font-size:.88rem;padding:9px 2px;border-radius:10px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--acc);color:var(--onacc)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;padding:6px 14px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.shows{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.show{background:none;border:0;padding:0;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.show b{display:block}.show span{color:var(--mute);font-size:.9rem}
+.art{aspect-ratio:1;border-radius:18px;overflow:hidden;background:var(--line);margin-bottom:8px}
+.art img{width:100%;height:100%;object-fit:cover;display:block}
+.back{border:0;background:none;color:var(--acc);font:inherit;font-weight:600;cursor:pointer;padding:0;margin-bottom:12px}
+.head{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.head .art{width:96px;flex:none;margin:0}
+.head h2{margin:0;font-size:1.4rem}.head p{margin:2px 0 8px;color:var(--mute)}
+.btn{border:1px solid var(--acc);background:none;color:var(--acc);font:inherit;font-weight:600;border-radius:99px;padding:7px 18px;cursor:pointer}
+.btn[aria-pressed=true],.btn.fill{background:var(--acc);color:var(--onacc)}
+.sbar{display:flex;gap:8px;margin-bottom:12px}
+.sbar input{flex:1;min-width:0;font:inherit;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.ep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.ep.now{border-color:var(--acc);box-shadow:inset 4px 0 0 var(--acc)}
+.ep .t{flex:1;min-width:0;padding:0 2px}.ep .t b{display:block;overflow-wrap:anywhere}.ep .t small{color:var(--mute)}
+.ic{width:42px;height:42px;border-radius:50%;border:0;background:var(--acc);color:var(--onacc);font-size:1rem;cursor:pointer;flex:none;font-family:inherit}
+.ic.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+.empty,.msg{color:var(--mute);text-align:center;padding:30px 14px}
+.empty{border:2px dashed var(--line);border-radius:16px}
+.lock{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;text-align:center}
+.lock h3{margin:0 0 6px}.lock p{color:var(--mute);margin:0 0 14px}
+#player{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+#player .in{max-width:640px;margin:0 auto}
+#pt{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ps{color:var(--mute);font-size:.85rem}
+.ctl{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.ctl .ic{width:40px;height:40px;font-size:.8rem}
+.ctl .big{width:54px;height:54px;font-size:1.3rem;background:var(--grad);color:#fff}
+input[type=range]{width:100%;accent-color:var(--acc);margin:6px 0 0}
+.tm{display:flex;justify-content:space-between;color:var(--mute);font-size:.8rem}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(200px + env(safe-area-inset-bottom,0px));z-index:30;max-width:520px;margin:0 auto;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:14px;opacity:0;pointer-events:none;text-align:center}
+#toast.on{opacity:1}
+#sheet{position:fixed;inset:0;z-index:40;background:rgba(10,8,30,.55);display:none;align-items:flex-end}
+#sheet.on{display:flex}
+.sh{background:var(--card);width:100%;max-width:640px;margin:0 auto;border-radius:26px 26px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sh h2{margin:0 0 4px;font-size:1.6rem;letter-spacing:-.02em}
+.sh ul{padding:0;list-style:none;margin:14px 0 18px}
+.sh li{padding:7px 0 7px 28px;position:relative}
+.sh li::before{content:"✓";position:absolute;left:0;color:var(--acc);font-weight:800}
+.sh .btn{display:block;width:100%;margin-top:10px;padding:13px}
+.sh .grad{background:var(--grad);color:#fff;border:0;font-size:1.05rem}
+.sh .link{border:0;color:var(--mute);font-weight:400}
+#welcome{position:fixed;inset:0;z-index:50;background:var(--grad);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+#welcome h1{font-size:2.4rem;letter-spacing:-.03em;margin:22px 0 8px}
+#welcome p{font-size:1.15rem;max-width:300px;margin:0 0 30px;opacity:.95}
+#welcome button{border:0;border-radius:99px;background:#fff;color:#1C1840;font:inherit;font-weight:800;font-size:1.1rem;padding:14px 44px;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){#toast,.ep,.btn,.ic{transition:opacity .2s,background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<div id="welcome" role="dialog" aria-label="Bienvenue"></div>
+<header class="hero"><div class="in">
+  <div class="brand"><span id="logo"></span><b>Podlo</b><button class="plus" data-plus id="plusbtn">Plus</button></div>
+  <p class="tag">Que voulez-vous écouter aujourd'hui ?</p>
+</div></header>
+<main>
+  <nav role="tablist">
+    <button role="tab" data-tab="discover" aria-selected="true">Explorer</button>
+    <button role="tab" data-tab="subs" aria-selected="false">Mes podcasts</button>
+    <button role="tab" data-tab="queue" aria-selected="false">À suivre</button>
+    <button role="tab" data-tab="off" aria-selected="false">Hors ligne</button>
+  </nav>
+  <div id="view"></div>
+</main>
+<div id="toast" role="status"></div>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Podlo Plus"></div>
+<div id="player"><div class="in">
+  <div id="pt">Choisissez un épisode</div>
+  <div id="ps">Aucune lecture en cours</div>
+  <input id="seek" type="range" min="0" max="100" value="0" step="1" aria-label="Position de lecture">
+  <div class="tm"><span id="cur">0:00</span><span id="tot">0:00</span></div>
+  <div class="ctl">
+    <button class="ic ghost" id="spd" aria-label="Vitesse de lecture">1×</button>
+    <button class="ic ghost" id="back" aria-label="Reculer de 15 secondes">−15</button>
+    <button class="ic big" id="pp" aria-label="Lecture">▶</button>
+    <button class="ic ghost" id="fwd" aria-label="Avancer de 30 secondes">+30</button>
+    <button class="ic ghost" id="slp" aria-label="Minuteur de sommeil">☾</button>
+    <button class="ic ghost" id="nxt" aria-label="Épisode suivant">⏭</button>
+  </div>
+</div></div>
+<script>
+/* ===== RÉGLAGES =====
+   DEV: true  = bouton « Activer Plus (test) » visible. METTRE false AVANT DE PUBLIER.
+   RC_*: clés publiques RevenueCat (une par plateforme). ENTITLEMENT: nom de l'accès créé dans RevenueCat. */
+const CFG={DEV:true,RC_ANDROID:"",RC_IOS:"",ENTITLEMENT:"premium"};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const NATIVE=()=>!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+const PLG=n=>{if(!NATIVE())return null;try{return Capacitor.Plugins[n]||Capacitor.registerPlugin(n)}catch(e){return null}};
+const purchasesMsg=()=>!NATIVE()?"Les achats sont disponibles dans l'appli installée sur le téléphone.":!(Capacitor.getPlatform()==="ios"?CFG.RC_IOS:CFG.RC_ANDROID)?"Les achats ne sont pas encore activés dans cette version.":"";
+const LOGO=s=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="rgba(255,255,255,.22)"/><g fill="#fff"><rect x="12" y="25" width="6" height="14" rx="3"/><rect x="21" y="18" width="6" height="28" rx="3"/><rect x="30" y="10" width="6" height="44" rx="3"/><rect x="39" y="20" width="6" height="24" rx="3"/><rect x="48" y="27" width="6" height="10" rx="3"/></g></svg>`;
+
+let subs=ld("subs",[]),queue=ld("queue",[]),posMap=ld("pos",{}),dl=ld("dl",{});
+let premium=CFG.DEV?ld("premium",false):false;
+let tab="discover",term="actualités",results=[],open=null,eps=[],busy=false,err="",cur=null,speed=1,lastSave=0,busyDl={},sleepMin=0,sleepT=null;
+const CATS=["actualités","science","histoire","humour","business","fiction","santé"];
+const speeds=()=>premium?[1,1.25,1.5,2,2.5,3,0.75]:[1,1.25,1.5,2,0.75];
+const au=new Audio();au.preload="none";
+
+const fmt=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;return(h?h+":"+String(m).padStart(2,"0"):m)+":"+String(r).padStart(2,"0")};
+const pd=v=>{if(!v)return 0;if(v.includes(":"))return v.split(":").reduce((a,b)=>a*60+(+b||0),0);return +v||0};
+const list=n=>n==="eps"?eps:n==="off"?Object.values(dl).map(x=>x.ep):queue;
+const isNow=e=>cur&&cur.url===e.url;
+const art=s=>`<div class="art">${s.art?`<img src="${esc(s.art)}" alt="" loading="lazy">`:""}</div>`;
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),3400)}
+
+/* ===== Flux et recherche ===== */
+function parseFeed(x){
+  const d=new DOMParser().parseFromString(x,"text/xml");
+  return [...d.querySelectorAll("item")].slice(0,40).map(it=>{
+    const en=it.querySelector("enclosure"),du=it.getElementsByTagNameNS("*","duration")[0];
+    const dt=new Date((it.querySelector("pubDate")||{}).textContent||"");
+    return{url:en&&(en.getAttribute("url")||"").replace(/^http:/,"https:"),title:(it.querySelector("title")||{}).textContent||"Sans titre",
+      dur:pd(du&&du.textContent),date:isNaN(dt)?"":dt.toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})};
+  }).filter(e=>e.url);
+}
+async function fetchFeed(u){
+  u=u.replace(/^http:/,"https:");
+  const tries=[u,"https://api.allorigins.win/raw?url="+encodeURIComponent(u),"https://corsproxy.io/?"+encodeURIComponent(u)];
+  for(const t of tries){try{const r=await fetch(t);if(!r.ok)continue;const l=parseFeed(await r.text());if(l.length)return l}catch(e){}}
+  throw new Error("feed");
+}
+async function search(t){
+  term=t;busy=true;err="";render();
+  try{
+    const r=await fetch("https://itunes.apple.com/search?media=podcast&country=FR&limit=24&term="+encodeURIComponent(t));
+    const j=await r.json();
+    results=j.results.filter(x=>x.feedUrl).map(x=>({id:x.collectionId,name:x.collectionName,author:x.artistName,art:x.artworkUrl600||x.artworkUrl100,feed:x.feedUrl}));
+  }catch(e){results=[];err="L'annuaire de podcasts est injoignable. Vérifiez votre connexion puis relancez la recherche."}
+  busy=false;render();
+}
+async function openShow(s){
+  open=s;eps=[];busy=true;err="";render();
+  try{eps=(await fetchFeed(s.feed)).map(e=>({...e,show:s.name,art:s.art}))}
+  catch(e){err="Impossible de charger les épisodes de cette émission. Essayez-en une autre ou réessayez plus tard."}
+  busy=false;render();
+}
+
+/* ===== Affichage ===== */
+function epRow(ln,i){
+  const e=list(ln)[i],now=isNow(e),pl=now&&!au.paused,q=queue.some(x=>x.url===e.url),got=!!dl[e.url],wip=!!busyDl[e.url];
+  const meta=[e.show,e.date,e.dur?Math.round(e.dur/60)+" min":""].filter(Boolean).map(esc).join(" – ");
+  return `<div class="ep ${now?"now":""}"><button class="ic" data-play="${ln},${i}" aria-label="${pl?"Pause":"Lire"} : ${esc(e.title)}">${pl?"❚❚":"▶"}</button>
+  <div class="t"><b>${esc(e.title)}</b><small>${meta}</small></div>
+  <button class="ic ghost" data-q="${ln},${i}" aria-pressed="${q}" aria-label="${q?"Retirer de":"Ajouter à"} À suivre">${q?"✓":"+"}</button>
+  <button class="ic ghost" data-dl="${ln},${i}" aria-label="${got?"Supprimer le téléchargement":"Télécharger pour écouter hors ligne"}">${wip?"…":got?"✕":"⤓"}</button></div>`;
+}
+const grid=a=>`<div class="shows">`+a.map(s=>`<button class="show" data-open="${esc(s.id)}">${art(s)}<b>${esc(s.name)}</b><span>${esc(s.author)}</span></button>`).join("")+"</div>";
+function render(){
+  document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab&&!open));
+  $("#plusbtn").textContent=premium?"Plus ✓":"Plus";
+  let h="";
+  const status=busy?`<div class="msg">Chargement…</div>`:err?`<div class="msg" role="alert">${esc(err)}</div>`:"";
+  if(open){
+    const on=subs.some(x=>x.id===open.id);
+    h=`<button class="back" data-back>‹ Retour</button><div class="head">${art(open)}<div><h2>${esc(open.name)}</h2><p>${esc(open.author)}</p><button class="btn" data-sub aria-pressed="${on}">${on?"Abonné ✓":"S'abonner"}</button></div></div>`+status+eps.map((_,i)=>epRow("eps",i)).join("");
+  }else if(tab==="discover"){
+    h=`<div class="sbar"><input id="q" type="search" placeholder="Rechercher un podcast" value="${esc(term)}" aria-label="Rechercher un podcast"><button class="btn fill" data-go>Chercher</button></div>
+    <div class="chips">${CATS.map(c=>`<button class="chip" data-term="${c}" aria-pressed="${c===term}">${c}</button>`).join("")}</div>`+status+(busy||err?"":results.length?grid(results):`<div class="msg">Aucun résultat pour « ${esc(term)} ».</div>`);
+  }else if(tab==="subs"){
+    h=subs.length?grid(subs):`<div class="empty">Vous ne suivez encore aucun podcast.<br>Ouvrez une émission dans Explorer et touchez « S'abonner ».</div>`;
+  }else if(tab==="queue"){
+    h=queue.length?queue.map((_,i)=>epRow("queue",i)).join(""):`<div class="empty">Rien à suivre pour l'instant.<br>Touchez + à côté d'un épisode pour l'ajouter ici.</div>`;
+  }else if(!premium){
+    h=`<div class="lock"><h3>Écoutez sans connexion</h3><p>Avec Podlo Plus, téléchargez vos épisodes et écoutez-les dans le train, l'avion ou le métro.</p><button class="btn fill" data-plus>Découvrir Podlo Plus</button></div>`;
+  }else{
+    const n=Object.keys(dl).length;
+    h=n?list("off").map((_,i)=>epRow("off",i)).join(""):`<div class="empty">Aucun épisode téléchargé.<br>Touchez ⤓ à côté d'un épisode pour l'écouter hors ligne.</div>`;
+  }
+  $("#view").innerHTML=h;
+}
+function drawPlayer(){
+  $("#pt").textContent=cur?cur.title:"Choisissez un épisode";
+  $("#ps").textContent=cur?cur.show:"Aucune lecture en cours";
+  $("#pp").textContent=au.paused?"▶":"❚❚";
+  $("#pp").setAttribute("aria-label",au.paused?"Lecture":"Pause");
+  $("#spd").textContent=speed+"×";
+  $("#slp").textContent=sleepMin?sleepMin+"′":"☾";
+  tick();
+}
+function tick(){
+  const d=au.duration||(cur&&cur.dur)||0;
+  $("#seek").max=d||100;$("#seek").value=au.currentTime||0;
+  $("#cur").textContent=fmt(au.currentTime);$("#tot").textContent=fmt(d);
+}
+
+/* ===== Lecture ===== */
+function setMeta(){
+  if(!("mediaSession" in navigator)||!cur)return;
+  navigator.mediaSession.metadata=new MediaMetadata({title:cur.title,artist:cur.show,artwork:cur.art?[{src:cur.art}]:[]});
+  const a=(n,f)=>{try{navigator.mediaSession.setActionHandler(n,f)}catch(e){}};
+  a("play",()=>au.play());a("pause",()=>au.pause());
+  a("seekbackward",()=>{au.currentTime-=15});a("seekforward",()=>{au.currentTime+=30});a("nexttrack",next);
+}
+function play(e){
+  if(isNow(e)){au.paused?au.play():au.pause();return}
+  cur=e;
+  const d=dl[e.url];
+  au.src=d&&window.Capacitor?Capacitor.convertFileSrc(d.uri):e.url;
+  au.defaultPlaybackRate=speed;au.playbackRate=speed;
+  const p=posMap[e.url]||0;
+  au.addEventListener("loadedmetadata",()=>{if(p>5&&p<au.duration-10)au.currentTime=p},{once:true});
+  au.play().catch(()=>{});
+  setMeta();drawPlayer();render();
+}
+function next(){
+  if(!cur)return;
+  const i=queue.findIndex(x=>x.url===cur.url),n=queue[i+1]||(i<0?queue[0]:null);
+  if(n)play(n);
+}
+au.addEventListener("play",()=>{drawPlayer();render()});
+au.addEventListener("pause",()=>{drawPlayer();render()});
+au.addEventListener("timeupdate",()=>{
+  tick();
+  if(cur&&Date.now()-lastSave>5000){lastSave=Date.now();posMap[cur.url]=au.currentTime;sv("pos",posMap)}
+});
+au.addEventListener("ended",()=>{if(cur){delete posMap[cur.url];sv("pos",posMap)}next()});
+au.addEventListener("error",()=>{if(cur)$("#ps").textContent="Lecture impossible : essayez un autre épisode."});
+
+/* ===== Fonctions Plus ===== */
+async function download(e){
+  const got=dl[e.url];
+  const fs=PLG("Filesystem");
+  if(got){
+    if(!confirm("Supprimer ce téléchargement ?"))return;
+    try{if(fs)await fs.deleteFile({path:got.path,directory:"DATA"})}catch(x){}
+    delete dl[e.url];sv("dl",dl);render();return;
+  }
+  if(!premium){showSheet();return}
+  if(!fs){toast("Les téléchargements fonctionnent dans l'appli installée sur le téléphone.");return}
+  const ext=/\.m4a/i.test(e.url)?"m4a":"mp3",path="podlo/"+Date.now()+"."+ext;
+  busyDl[e.url]=true;render();
+  try{
+    await fs.downloadFile({url:e.url,path,directory:"DATA",recursive:true});
+    const r=await fs.getUri({path,directory:"DATA"});
+    dl[e.url]={path,uri:r.uri,ep:e};sv("dl",dl);toast("Téléchargé : disponible hors ligne.");
+  }catch(x){toast("Le téléchargement a échoué. Vérifiez votre connexion et l'espace libre.")}
+  delete busyDl[e.url];render();
+}
+function setPremium(v){
+  premium=!!v;if(CFG.DEV)sv("premium",premium);
+  if(!speeds().includes(speed)){speed=1;au.playbackRate=1}
+  if(!premium){sleepMin=0;clearTimeout(sleepT)}
+  render();drawPlayer();
+}
+function cycleSleep(){
+  if(!premium){showSheet();return}
+  const o=[0,15,30,60];sleepMin=o[(o.indexOf(sleepMin)+1)%o.length];
+  clearTimeout(sleepT);
+  if(sleepMin){sleepT=setTimeout(()=>{au.pause();sleepMin=0;drawPlayer()},sleepMin*60000);toast("Lecture arrêtée dans "+sleepMin+" minutes.")}
+  else toast("Minuteur désactivé.");
+  drawPlayer();
+}
+
+/* ===== Abonnement (RevenueCat) ===== */
+async function initPurchases(){
+  const p=PLG("Purchases");if(!p)return;
+  const key=Capacitor.getPlatform()==="ios"?CFG.RC_IOS:CFG.RC_ANDROID;if(!key)return;
+  try{await p.configure({apiKey:key});const r=await p.getCustomerInfo();setPremium(!!r.customerInfo.entitlements.active[CFG.ENTITLEMENT])}catch(e){}
+}
+async function getPackage(){const p=PLG("Purchases");if(!p)return null;const o=await p.getOfferings();return o.current&&o.current.availablePackages[0]}
+async function buy(){
+  const p=PLG("Purchases");
+  const nm=purchasesMsg();if(nm||!p){toast(nm||"Achats indisponibles.");return}
+  try{
+    const pk=await getPackage();
+    if(!pk){toast("L'abonnement n'est pas disponible pour le moment.");return}
+    const r=await p.purchasePackage({aPackage:pk});
+    if(r.customerInfo.entitlements.active[CFG.ENTITLEMENT]){setPremium(true);closeSheet();toast("Bienvenue dans Podlo Plus !")}
+  }catch(e){if(!(e&&e.userCancelled))toast("L'achat n'a pas abouti. Réessayez dans un instant.")}
+}
+async function restore(){
+  const p=PLG("Purchases");
+  const nm=purchasesMsg();if(nm||!p){toast(nm||"Restauration indisponible.");return}
+  try{
+    const r=await p.restorePurchases();
+    if(r.customerInfo.entitlements.active[CFG.ENTITLEMENT]){setPremium(true);closeSheet();toast("Achat restauré.")}
+    else toast("Aucun achat à restaurer pour ce compte.");
+  }catch(e){toast("La restauration a échoué. Réessayez.")}
+}
+function showSheet(){
+  const s=$("#sheet");
+  s.innerHTML=`<div class="sh"><h2>Podlo Plus</h2><div style="color:var(--mute)">${premium?"Merci, votre abonnement est actif.":"Tout Podlo, en plus confortable."}</div>
+  <ul><li>Téléchargez vos épisodes et écoutez sans connexion</li><li>Minuteur de sommeil</li><li>Vitesses de lecture jusqu'à 3×</li><li>Vous soutenez le développement d'Podlo</li></ul>
+  ${premium?"":`<button class="btn grad" data-buy id="buy">S'abonner</button><button class="btn link" data-restore>Restaurer mes achats</button>`}
+  ${CFG.DEV?`<button class="btn" data-dev>${premium?"Désactiver Plus (test)":"Activer Plus (test)"}</button>`:""}
+  <button class="btn link" data-close>Fermer</button></div>`;
+  s.classList.add("on");
+  if(!premium)getPackage().then(pk=>{if(pk&&pk.product&&pk.product.priceString)$("#buy").textContent="S'abonner – "+pk.product.priceString}).catch(()=>{});
+}
+function closeSheet(){$("#sheet").classList.remove("on")}
+
+/* ===== Actions ===== */
+document.addEventListener("click",ev=>{
+  const t=ev.target.closest("button");
+  if(ev.target.id==="sheet"){closeSheet();return}
+  if(!t)return;const d=t.dataset;
+  if(d.tab){tab=d.tab;open=null;err="";busy=false;render();if(tab==="discover"&&!results.length)search(term)}
+  else if(d.term!==undefined)search(d.term);
+  else if("go" in d){const v=$("#q").value.trim();if(v)search(v)}
+  else if(d.open!==undefined){const s=(tab==="subs"?subs:results).find(x=>String(x.id)===d.open);if(s)openShow(s)}
+  else if("back" in d){open=null;err="";busy=false;render()}
+  else if("sub" in d){subs=subs.some(x=>x.id===open.id)?subs.filter(x=>x.id!==open.id):[...subs,open];sv("subs",subs);render()}
+  else if(d.play){const[l,i]=d.play.split(",");play(list(l)[+i])}
+  else if(d.q){const[l,i]=d.q.split(","),e=list(l)[+i];queue=queue.some(x=>x.url===e.url)?queue.filter(x=>x.url!==e.url):[...queue,e];sv("queue",queue);render()}
+  else if(d.dl){const[l,i]=d.dl.split(",");download(list(l)[+i])}
+  else if("plus" in d)showSheet();
+  else if("buy" in d)buy();
+  else if("restore" in d)restore();
+  else if("close" in d)closeSheet();
+  else if("dev" in d){setPremium(!premium);closeSheet()}
+  else if("start" in d){sv("welcomed",1);$("#welcome").remove()}
+});
+document.addEventListener("keydown",ev=>{
+  if(ev.key==="Enter"&&ev.target.id==="q"){const v=ev.target.value.trim();if(v)search(v)}
+  if(ev.key==="Escape")closeSheet();
+});
+$("#pp").onclick=()=>{if(cur)au.paused?au.play():au.pause()};
+$("#back").onclick=()=>{au.currentTime=Math.max(0,au.currentTime-15)};
+$("#fwd").onclick=()=>{if(cur)au.currentTime+=30};
+$("#nxt").onclick=next;
+$("#slp").onclick=cycleSleep;
+$("#spd").onclick=()=>{const s=speeds();speed=s[(s.indexOf(speed)+1)%s.length];au.defaultPlaybackRate=speed;au.playbackRate=speed;drawPlayer()};
+$("#seek").oninput=e=>{au.currentTime=+e.target.value};
+
+$("#logo").innerHTML=LOGO(44);
+if(ld("welcomed",0))$("#welcome").remove();
+else $("#welcome").innerHTML=LOGO(96)+`<h1>Bienvenue sur Podlo</h1><p>Tous vos podcasts, au même endroit. Simple, gratuit, sans compte.</p><button data-start>Commencer</button>`;
+render();drawPlayer();search(term);initPurchases();
+if("serviceWorker" in navigator&&!NATIVE()&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>

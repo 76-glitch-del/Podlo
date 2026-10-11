@@ -1,0 +1,8 @@
+{
+  "appId": "app.podlo.podcasts",
+  "appName": "Podlo",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorHttp": { "enabled": true }
+  }
+}
